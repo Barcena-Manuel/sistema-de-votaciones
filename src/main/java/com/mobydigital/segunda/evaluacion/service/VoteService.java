@@ -1,56 +1,56 @@
 package com.mobydigital.segunda.evaluacion.service;
 
+import com.mobydigital.segunda.evaluacion.dto.VoteDto;
 import com.mobydigital.segunda.evaluacion.exception.CandidateNotExistException;
 import com.mobydigital.segunda.evaluacion.exception.InvalidDataException;
 import com.mobydigital.segunda.evaluacion.exception.PoliticalPartyNotFoundException;
+import com.mobydigital.segunda.evaluacion.model.Candidate;
 import com.mobydigital.segunda.evaluacion.model.Vote;
 import com.mobydigital.segunda.evaluacion.repository.CandidateRepository;
 import com.mobydigital.segunda.evaluacion.repository.VoteRepository;
+import com.mobydigital.segunda.evaluacion.service.mapper.VoteMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class VoteService {
 
-    private VoteRepository repository;
-    private CandidateService candidateService;
-    private PoliticalPartyService politicalService;
+    private final VoteRepository repository;
+    private final CandidateRepository candidateRepository;
+    private final VoteMapper voteMapper;
 
-    public List<Vote> init(List<Vote> voteList) throws InvalidDataException {
-        if(voteList.isEmpty()){
+    @Autowired
+    public VoteService(VoteRepository repository, CandidateRepository candidateRepository, VoteMapper voteMapper) {
+        this.repository = repository;
+        this.candidateRepository = candidateRepository;
+        this.voteMapper = voteMapper;
+    }
+
+    public VoteDto create(VoteDto voteDto) throws InvalidDataException, CandidateNotExistException {
+
+        if (voteDto.getCandidateId() == null) {
             throw new InvalidDataException();
         }
 
-        return repository.saveAll(voteList);
+        Candidate candidate = candidateRepository
+                .findById(voteDto.getCandidateId())
+                .orElseThrow(() -> new CandidateNotExistException(voteDto.getCandidateId()));
+
+        Vote vote = new Vote();
+        vote.setCandidate(candidate);
+        vote.setDate(voteDto.getDate() != null ? voteDto.getDate() : LocalDateTime.now());
+
+        Vote saved = repository.save(vote);
+
+        return voteMapper.toDto(saved);
     }
 
-    public Vote create(Vote vote) throws InvalidDataException, CandidateNotExistException, PoliticalPartyNotFoundException {
-
-        Long idCandidate = vote.getCandidate().getId();
-        Long idPoliticalParty = vote.getCandidate().getParty().getId();
-
-        if(idCandidate == null || idPoliticalParty == null){
-            throw new InvalidDataException();
-        } else if(!candidateService.exist(idCandidate)) {
-            throw new CandidateNotExistException(idCandidate);
-        } else if(!politicalService.exists(idPoliticalParty)){
-            throw new PoliticalPartyNotFoundException(idPoliticalParty);
-        }
-
-        return repository.save(vote);
+    public List<VoteDto> getAll() {
+        return repository.findAll().stream().map(voteMapper::toDto).toList();
     }
 
-    public List<Vote> getAll() {
-        return repository.findAll();
-    }
-
-/*
-    public Long votesPerCandidate(Long candidateId) {
-    }
-
-    public Long votesPerPoliticalParty() {
-    }
-
- */
 }

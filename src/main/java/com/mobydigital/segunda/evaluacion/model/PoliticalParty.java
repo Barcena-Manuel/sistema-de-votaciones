@@ -1,10 +1,7 @@
 package com.mobydigital.segunda.evaluacion.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -14,7 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-@Component
+@ToString
 @Entity
 public class PoliticalParty {
 
@@ -29,5 +26,5 @@ public class PoliticalParty {
     private String initials;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "politicalParty")
-    private List<Candidate> candidate = new ArrayList<>();
+    private List<Candidate> candidates = new ArrayList<>();
 }

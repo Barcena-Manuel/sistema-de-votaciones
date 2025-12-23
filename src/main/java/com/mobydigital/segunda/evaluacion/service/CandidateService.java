@@ -1,65 +1,73 @@
 package com.mobydigital.segunda.evaluacion.service;
 
+import com.mobydigital.segunda.evaluacion.dto.CandidateDto;
 import com.mobydigital.segunda.evaluacion.exception.CandidateNotExistException;
 import com.mobydigital.segunda.evaluacion.exception.InvalidDataException;
-import com.mobydigital.segunda.evaluacion.exception.PoliticalPartyNotFoundException;
 import com.mobydigital.segunda.evaluacion.model.Candidate;
+import com.mobydigital.segunda.evaluacion.model.PoliticalParty;
 import com.mobydigital.segunda.evaluacion.repository.CandidateRepository;
+import com.mobydigital.segunda.evaluacion.repository.PoliticalPartyRepository;
+import com.mobydigital.segunda.evaluacion.service.mapper.CandidateMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CandidateService {
 
-    private CandidateRepository repository;
-    private PoliticalPartyService politicalPartyService;
+    private final CandidateRepository repository;
+    private final CandidateMapper candidateMapper;
+    private final PoliticalPartyRepository politicalPartyRepository;
 
     @Autowired
-    public CandidateService(CandidateRepository repository, PoliticalPartyService politicalParty){
+    public CandidateService(CandidateRepository repository, CandidateMapper candidateMapper, PoliticalPartyRepository politicalPartyRepository) {
         this.repository = repository;
-        this.politicalPartyService = politicalParty;
+        this.candidateMapper = candidateMapper;
+        this.politicalPartyRepository = politicalPartyRepository;
     }
 
-    public List<Candidate> init(List<Candidate> candidateList) throws InvalidDataException{
-        if(candidateList.isEmpty()){
+    @Transactional
+    public CandidateDto create(CandidateDto candidateDto) throws InvalidDataException {
+        if (candidateDto.getPartyDto() == null || candidateDto.getPartyDto().getId() == null) {
             throw new InvalidDataException();
         }
-        return repository.saveAll(candidateList);
+        
+        Candidate candidate = candidateMapper.toEntity(candidateDto);
+
+        PoliticalParty party = politicalPartyRepository
+                .findById(candidateDto.getPartyDto().getId())
+                .orElseThrow(InvalidDataException::new);
+
+        candidate.setPoliticalParty(party);
+
+        return candidateMapper.toDto(repository.save(candidate));
     }
 
-    public Candidate create(Candidate candidate) throws InvalidDataException, PoliticalPartyNotFoundException {
-        Long politicalPartyId = candidate.getParty().getId();
-
-        if(politicalPartyId == null){
-            throw new InvalidDataException();
-        } else if (!politicalPartyService.exists(politicalPartyId)) {
-            throw new PoliticalPartyNotFoundException();
-        }
-
-        candidate.setParty(politicalPartyService.getById(politicalPartyId));
-
-        return repository.save(candidate);
+    @Transactional(readOnly = true)
+    public List<CandidateDto> getAll() {
+        return repository.findAll().stream()
+                .map(candidateMapper::toDto)
+                .collect(Collectors.toList());
     }
 
-    public List<Candidate> getAll(){
-        return repository.findAll();
+    @Transactional(readOnly = true)
+    public CandidateDto getById(Long id) throws CandidateNotExistException {
+        Candidate candidate = repository.findById(id).orElseThrow(() -> new CandidateNotExistException(id));
+        return candidateMapper.toDto(candidate);
     }
 
-    public Candidate getById(Long id) throws CandidateNotExistException {
-        return repository.findById(id).orElseThrow(() -> new CandidateNotExistException());
-    }
-
-    public void deleteById(Long id) throws CandidateNotExistException{
-        if(!exist(id)){
-            throw new CandidateNotExistException();
+    public void deleteById(Long id) throws CandidateNotExistException {
+        if (!exists(id)) {
+            throw new CandidateNotExistException(id);
         }
 
         repository.deleteById(id);
     }
 
-    public boolean exist(Long id){
+    public boolean exists(Long id) {
         return repository.existsById(id);
     }
 }
