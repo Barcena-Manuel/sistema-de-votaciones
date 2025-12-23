@@ -16,7 +16,7 @@ public class CandidateDto {
 
     private String fullName;
 
-    private PoliticalPartyDto partyDto;
+    private PoliticalPartyDto politicalPartyDto;
 
     private List<VoteDto> votesDto = new ArrayList<>();
 }

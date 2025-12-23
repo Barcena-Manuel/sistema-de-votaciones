@@ -7,7 +7,7 @@ import com.mobydigital.segunda.evaluacion.model.Candidate;
 import com.mobydigital.segunda.evaluacion.model.PoliticalParty;
 import com.mobydigital.segunda.evaluacion.repository.CandidateRepository;
 import com.mobydigital.segunda.evaluacion.repository.PoliticalPartyRepository;
-import com.mobydigital.segunda.evaluacion.service.mapper.CandidateMapper;
+import com.mobydigital.segunda.evaluacion.mapper.CandidateMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,14 +31,14 @@ public class CandidateService {
 
     @Transactional
     public CandidateDto create(CandidateDto candidateDto) throws InvalidDataException {
-        if (candidateDto.getPartyDto() == null || candidateDto.getPartyDto().getId() == null) {
+        if (candidateDto.getPoliticalPartyDto() == null || candidateDto.getPoliticalPartyDto().getId() == null) {
             throw new InvalidDataException();
         }
         
         Candidate candidate = candidateMapper.toEntity(candidateDto);
 
         PoliticalParty party = politicalPartyRepository
-                .findById(candidateDto.getPartyDto().getId())
+                .findById(candidateDto.getPoliticalPartyDto().getId())
                 .orElseThrow(InvalidDataException::new);
 
         candidate.setPoliticalParty(party);

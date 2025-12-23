@@ -3,18 +3,16 @@ package com.mobydigital.segunda.evaluacion.service;
 import com.mobydigital.segunda.evaluacion.dto.VoteDto;
 import com.mobydigital.segunda.evaluacion.exception.CandidateNotExistException;
 import com.mobydigital.segunda.evaluacion.exception.InvalidDataException;
-import com.mobydigital.segunda.evaluacion.exception.PoliticalPartyNotFoundException;
 import com.mobydigital.segunda.evaluacion.model.Candidate;
 import com.mobydigital.segunda.evaluacion.model.Vote;
 import com.mobydigital.segunda.evaluacion.repository.CandidateRepository;
 import com.mobydigital.segunda.evaluacion.repository.VoteRepository;
-import com.mobydigital.segunda.evaluacion.service.mapper.VoteMapper;
+import com.mobydigital.segunda.evaluacion.mapper.VoteMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class VoteService {

@@ -2,7 +2,6 @@ package com.mobydigital.segunda.evaluacion.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 

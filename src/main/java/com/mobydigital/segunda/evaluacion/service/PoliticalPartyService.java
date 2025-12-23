@@ -5,7 +5,7 @@ import com.mobydigital.segunda.evaluacion.exception.InvalidDataException;
 import com.mobydigital.segunda.evaluacion.exception.PoliticalPartyNotFoundException;
 import com.mobydigital.segunda.evaluacion.model.PoliticalParty;
 import com.mobydigital.segunda.evaluacion.repository.PoliticalPartyRepository;
-import com.mobydigital.segunda.evaluacion.service.mapper.PoliticalPartyMapper;
+import com.mobydigital.segunda.evaluacion.mapper.PoliticalPartyMapper;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
