@@ -1,4 +1,4 @@
-package com.mobydigital.segunda.evaluacion.service.mapper;
+package com.mobydigital.segunda.evaluacion.mapper;
 
 import com.mobydigital.segunda.evaluacion.dto.PoliticalPartyDto;
 import com.mobydigital.segunda.evaluacion.model.PoliticalParty;

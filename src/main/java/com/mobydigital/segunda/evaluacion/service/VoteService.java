@@ -3,18 +3,18 @@ package com.mobydigital.segunda.evaluacion.service;
 import com.mobydigital.segunda.evaluacion.dto.VoteDto;
 import com.mobydigital.segunda.evaluacion.exception.CandidateNotExistException;
 import com.mobydigital.segunda.evaluacion.exception.InvalidDataException;
-import com.mobydigital.segunda.evaluacion.exception.PoliticalPartyNotFoundException;
 import com.mobydigital.segunda.evaluacion.model.Candidate;
 import com.mobydigital.segunda.evaluacion.model.Vote;
 import com.mobydigital.segunda.evaluacion.repository.CandidateRepository;
 import com.mobydigital.segunda.evaluacion.repository.VoteRepository;
-import com.mobydigital.segunda.evaluacion.service.mapper.VoteMapper;
+import com.mobydigital.segunda.evaluacion.mapper.VoteMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class VoteService {
@@ -22,6 +22,8 @@ public class VoteService {
     private final VoteRepository repository;
     private final CandidateRepository candidateRepository;
     private final VoteMapper voteMapper;
+
+    private static final Logger logger = LoggerFactory.getLogger(VoteService.class);
 
     @Autowired
     public VoteService(VoteRepository repository, CandidateRepository candidateRepository, VoteMapper voteMapper) {
@@ -31,11 +33,12 @@ public class VoteService {
     }
 
     public VoteDto create(VoteDto voteDto) throws InvalidDataException, CandidateNotExistException {
-
         if (voteDto.getCandidateId() == null) {
+            logger.info("Invalid data");
             throw new InvalidDataException();
         }
 
+        logger.info("Creating vote");
         Candidate candidate = candidateRepository
                 .findById(voteDto.getCandidateId())
                 .orElseThrow(() -> new CandidateNotExistException(voteDto.getCandidateId()));
@@ -50,6 +53,7 @@ public class VoteService {
     }
 
     public List<VoteDto> getAll() {
+        logger.info("Getting all votes");
         return repository.findAll().stream().map(voteMapper::toDto).toList();
     }
 
