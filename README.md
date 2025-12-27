@@ -84,3 +84,4 @@ A continuación se adjunta una captura del análisis estático de código realiz
 *(Por favor, inserte aquí la captura de pantalla del análisis de SonarLint)*
 
 ## SonarLint Análisis
+![SonarLintCaptura.png](SonarLintCaptura.png)
