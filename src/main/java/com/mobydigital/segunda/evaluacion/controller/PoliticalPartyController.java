@@ -16,7 +16,7 @@ import java.util.List;
 
 @Tag(name = "Political Party", description = "Operations for political party")
 @RestController
-@RequestMapping("/api/politicalParty")
+@RequestMapping("/api/political-party")
 public class PoliticalPartyController {
 
     private PoliticalPartyService service;
