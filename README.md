@@ -20,8 +20,8 @@ Siga estos pasos para ejecutar la aplicación en su entorno local.
 
 1.  **Clonar el repositorio:**
     ```bash
-    git clone <URL_DEL_REPOSITORIO>
-    cd sistemaDeVotacion
+    git clone <https://github.com/Barcena-Manuel/sistema-de-votaciones.git>
+    cd sistema-de-votacion
     ```
 
 2.  **Ejecutar la aplicación:**
@@ -81,10 +81,8 @@ Al iniciar, la aplicación carga automáticamente los siguientes datos de prueba
 
 A continuación se adjunta una captura del análisis estático de código realizado con SonarLint.
 
-*(Por favor, inserte aquí la captura de pantalla del análisis de SonarLint)*
-
-## SonarLint Análisis
 ![SonarLintCaptura.png](SonarLintCaptura.png)
+
 
 ## Coverage
 ![Coverage.png](Coverage.png)
